@@ -1,46 +1,38 @@
 version: '3'
 services:
   nginx:
-    build:
-      context: ./requirements/nginx
-      dockerfile: ./Dockerfile
+    build: ./requirements/nginx
+    container_name: nginx
     ports:
       - 443:443
     volumes:
       - ./requirements/nginx/nginx.conf:/etc/nginx/nginx.conf
-      - ./requirements/nginx/deletethis/certificate.crt:/etc/nginx/certificate.crt
-      - ./requirements/nginx/deletethis/private.key:/etc/nginx/private.key
     depends_on:
       - wordpress
     networks:
       - internalNetwork
-    # restart: unless-stopped
+    restart: unless-stopped
 
   wordpress:
     image: wordpress:latest
-    environment:
-      WORDPRESS_DB_HOST: db
-      WORDPRESS_DB_NAME: wordpress
-      WORDPRESS_DB_USER: root
-      WORDPRESS_DB_PASSWORD: example
+    container_name: wordpress
     volumes:
-      - ./wordpress/wp-content:/var/www/html/wp-content
+      - ./requirements/wordpress/wp-content:/var/www/html/wp-content
     depends_on:
-      - db
+      - mariadb
     networks:
       - internalNetwork
-    # restart: unless-stopped
+    restart: unless-stopped
 
-  db:
+  mariadb:
     image: mariadb:latest
-    environment:
-      MYSQL_ROOT_PASSWORD: example
-      MYSQL_DATABASE: wordpress
+    container_name: mariadb
     volumes:
-      - ./mariadb/db-data:/var/lib/mysql
+      - ./requirements/mariadb/db-data:/var/lib/mysql
     networks:
       - internalNetwork
-    # restart: unless-stopped
+    restart: unless-stopped
 
 networks:
   internalNetwork:
+    driver: bridge

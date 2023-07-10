@@ -1,1 +1,3 @@
 srcs/.env
+srcs/requirements/mariadb/db-data
+srcs/requirements/wordpress/wp-content
