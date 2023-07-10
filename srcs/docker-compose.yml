@@ -22,6 +22,8 @@ services:
       - mariadb
     networks:
       - internalNetwork
+    env_file:
+      - .env
     environment:
       WORDPRESS_DB_HOST: ${WORDPRESS_DB_HOST}
       WORDPRESS_DB_NAME: ${MYSQLDB_DATABASE}
@@ -36,6 +38,8 @@ services:
       - ./requirements/mariadb/db-data:/var/lib/mysql
     networks:
       - internalNetwork
+    env_file:
+      - .env
     environment:
       MYSQL_DATABASE: ${MARIADB_DATABASE}
       MYSQL_ROOT_PASSWORD: ${MARIADB_ROOT_PASSWORD}
