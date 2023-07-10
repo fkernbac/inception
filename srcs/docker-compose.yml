@@ -11,7 +11,7 @@ services:
       - wordpress
     networks:
       - internalNetwork
-    restart: unless-stopped
+    # restart: unless-stopped
 
   wordpress:
     image: wordpress:latest
@@ -22,7 +22,12 @@ services:
       - mariadb
     networks:
       - internalNetwork
-    restart: unless-stopped
+    environment:
+      WORDPRESS_DB_HOST: ${WORDPRESS_DB_HOST}
+      WORDPRESS_DB_NAME: ${MYSQLDB_DATABASE}
+      WORDPRESS_DB_USER: ${MYSQLDB_USER}
+      WORDPRESS_DB_PASSWORD: ${MYSQLDB_PASSWORD}
+    # restart: unless-stopped
 
   mariadb:
     image: mariadb:latest
@@ -31,7 +36,12 @@ services:
       - ./requirements/mariadb/db-data:/var/lib/mysql
     networks:
       - internalNetwork
-    restart: unless-stopped
+    environment:
+      MYSQL_DATABASE: ${MARIADB_DATABASE}
+      MYSQL_ROOT_PASSWORD: ${MARIADB_ROOT_PASSWORD}
+      MYSQL_USER: ${MARIADB_USER}
+      MYSQL_PASSWORD: ${MARIADB_PASSWORD}
+    # restart: unless-stopped
 
 networks:
   internalNetwork:
