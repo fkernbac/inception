@@ -14,10 +14,12 @@ services:
     # restart: unless-stopped
 
   wordpress:
-    image: wordpress:latest
+    build:
+      context: ./requirements/wordpress
     container_name: wordpress
     volumes:
       - ./requirements/wordpress/wp-content:/var/www/html/wp-content
+      - ./requirements/wordpress/php-fpm.config
     depends_on:
       - mariadb
     networks:
