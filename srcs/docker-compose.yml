@@ -14,12 +14,14 @@ services:
     # restart: unless-stopped
 
   wordpress:
-    build:
-      context: ./requirements/wordpress
+    image: wordpress:php7.3-fpm-alpine
+    # build:
+    #   context: ./requirements/wordpress
     container_name: wordpress
     volumes:
       - ./requirements/wordpress/wp-content:/var/www/html/wp-content
-      - ./requirements/wordpress/php-fpm.config
+      - ./requirements/wordpress/php-fpm.conf:/etc/php81/php-fpm.conf
+      - ./reqirements/wordpress/php-fpm.conf:/etc/php81/conf.d/www.conf
     depends_on:
       - mariadb
     networks:
@@ -31,6 +33,7 @@ services:
       WORDPRESS_DB_NAME: ${MARIADB_DATABASE}
       WORDPRESS_DB_USER: ${MARIADB_USER}
       WORDPRESS_DB_PASSWORD: ${MARIADB_PASSWORD}
+      WORDPRESS_DEBUG: 1
     # restart: unless-stopped
 
   mariadb:
