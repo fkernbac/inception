@@ -3,12 +3,14 @@ FROM alpine:3.17
 #install php-fpm
 RUN apk update && apk add php81 php81-fpm php81-opcache mariadb-client
 #install php modules
-RUN apk add php81-gd php81-mysqli php81-zlib php81-curl php81-phar
+RUN apk add php81-gd php81-mysqli php81-zlib php81-curl
+# needed for wp-cli
+RUN apk add php81-phar php81-mbstring
 
 #install wordpress
-RUN mkdir -p /var/www/html
+RUN mkdir -p /var/www/html/wordpress
 RUN chown -R nobody:nobody /var/www/html
-
+RUN chown -R nobody:nobody /var/www/html/wordpress
 
 # RUN wget -O /tmp/wordpress.tar.gz https://wordpress.org/latest.tar.gz && \
 # 	tar -xzf /tmp/wordpress.tar.gz -C /var/www/html --strip-components=1 && \
@@ -23,9 +25,9 @@ RUN mv wp-cli.phar /usr/local/bin/wp
 # Check whether the installation worked
 RUN wp --info
 
-WORKDIR /var/www/html/wordpress
-COPY install-wp.sh .
-RUN chmod +x install-wp.sh
+COPY install-wp.sh /var/www/html/wordpress
+RUN chmod +x /var/www/html/wordpress/install-wp.sh
+RUN ls -l /var/www/html/wordpress
 
 ENTRYPOINT ["sh", "/var/www/html/wordpress/install-wp.sh"]
 

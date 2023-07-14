@@ -1,2 +1,2 @@
-rm -r requirements/mariadb/db-data
-rm -r requirements/wordpress/wp-content
+rm -r requirements/mariadb/db-data/*
+rm -r ../wordpress/*
