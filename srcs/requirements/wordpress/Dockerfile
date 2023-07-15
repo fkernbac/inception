@@ -8,9 +8,10 @@ RUN apk add php81-gd php81-mysqli php81-zlib php81-curl
 RUN apk add php81-phar php81-mbstring
 
 #install wordpress
-RUN mkdir -p /var/www/html/wordpress
+RUN mkdir -p /var/www/html
 RUN chown -R nobody:nobody /var/www/html
-RUN chown -R nobody:nobody /var/www/html/wordpress
+WORKDIR /var/www/html
+
 
 # RUN wget -O /tmp/wordpress.tar.gz https://wordpress.org/latest.tar.gz && \
 # 	tar -xzf /tmp/wordpress.tar.gz -C /var/www/html --strip-components=1 && \
@@ -25,10 +26,9 @@ RUN mv wp-cli.phar /usr/local/bin/wp
 # Check whether the installation worked
 RUN wp --info
 
-COPY install-wp.sh /var/www/html/wordpress
-RUN chmod +x /var/www/html/wordpress/install-wp.sh
-RUN ls -l /var/www/html/wordpress
 
-ENTRYPOINT ["sh", "/var/www/html/wordpress/install-wp.sh"]
+COPY install-wp.sh /usr/local/bin
+RUN chmod +x /usr/local/bin/install-wp.sh
+ENTRYPOINT ["sh", "/usr/local/bin/install-wp.sh"]
 
 CMD ["php-fpm81", "-F"]

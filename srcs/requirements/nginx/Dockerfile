@@ -7,4 +7,8 @@ RUN openssl req -newkey rsa:4096 -x509 -sha256 -days 365 -nodes -out /etc/nginx/
 
 EXPOSE 443
 
+COPY test-nginx.sh /usr/local/bin
+RUN chmod +x /usr/local/bin/test-nginx.sh
+ENTRYPOINT ["sh", "/usr/local/bin/test-nginx.sh"]
+
 CMD ["/usr/sbin/nginx", "-g", "daemon off;"]
