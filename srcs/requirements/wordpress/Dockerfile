@@ -3,7 +3,7 @@ FROM alpine:3.17
 #install php-fpm
 RUN apk update && apk add php81 php81-fpm php81-opcache mariadb-client
 #install php modules
-RUN apk add php81-gd php81-mysqli php81-zlib php81-curl
+RUN apk add php81-gd php81-mysqli php81-zlib php81-curl php81-tokenizer
 # needed for wp-cli
 RUN apk add php81-phar php81-mbstring
 

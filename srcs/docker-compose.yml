@@ -17,7 +17,6 @@ services:
     container_name: wordpress
     build:
       context: ./requirements/wordpress
-    # image: wordpress:php7.3-fpm-alpine
     volumes:
       - /home/fkernbac/data/wordpress_data:/var/www/html
       - ./requirements/wordpress/php-fpm.conf:/etc/php81/php-fpm.conf
@@ -29,14 +28,16 @@ services:
       - .env
     environment:
       WORDPRESS_DB_HOST: ${WORDPRESS_DB_HOST}
-      WORDPRESS_DB_NAME: ${MARIADB_DATABASE}
-      WORDPRESS_DB_USER: ${MARIADB_USER}
-      WORDPRESS_DB_PASSWORD: ${MARIADB_PASSWORD}
+      WORDPRESS_DB_NAME: ${MYSQL_DATABASE}
+      WORDPRESS_DB_USER: ${MYSQL_USER}
+      WORDPRESS_DB_PASSWORD: ${MYSQL_PASSWORD}
       WORDPRESS_DEBUG: 1
     # restart: unless-stopped
 
   mariadb:
-    image: mariadb:latest
+    # image: mariadb:latest
+    # restart: unless-stopped
+    build: ./requirements/mariadb
     container_name: mariadb
     volumes:
       - /home/fkernbac/data/mariadb_data:/var/lib/mysql
@@ -45,11 +46,10 @@ services:
     env_file:
       - .env
     environment:
-      MARIADB_DATABASE: ${MARIADB_DATABASE}
-      MARIADB_ROOT_PASSWORD: ${MARIADB_ROOT_PASSWORD}
-      MARIADB_USER: ${MARIADB_USER}
-      MARIADB_PASSWORD: ${MARIADB_PASSWORD}
-    # restart: unless-stopped
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+      MYSQL_USER: ${MYSQL_USER}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD}
+      MYSQL_DATABASE: ${MYSQL_DATABASE}
 
 volumes:
   wordpress_data:

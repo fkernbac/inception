@@ -1,7 +1,7 @@
 # Wait for WordPress container to start
 until nc -z -v -w5 wordpress 9000; do
     echo "Waiting for WordPress container to start..."
-    sleep 5
+    sleep 10
 done
 
 # Test Nginx connectivity to WordPress
