@@ -10,6 +10,8 @@ COPY my.cnf /etc/mysql/my.cnf
 # Copy the entrypoint script
 COPY entrypoint.sh /entrypoint.sh
 RUN chmod +x /entrypoint.sh
+COPY init.sql /init.sql
+RUN chmod +rwx /init.sql
 
 # Start MariaDB
 ENTRYPOINT ["/entrypoint.sh"]
