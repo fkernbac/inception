@@ -34,18 +34,18 @@ done
 echo "Setting up database..."
 
 # Perform initial setup for MariaDB, create the database, user, and grant privileges
-# whoami
-# echo "CREATE DATABASE:"
-# mysql -p -e "CREATE DATABASE IF NOT EXISTS wordpress;"
-# echo "ALTER USER:"
-# mysql -p -e "ALTER USER 'root'@'localhost' IDENTIFIED BY 'anuba';"
-# echo "CREATE USER"
-# mysql -panuba -e "CREATE USER 'fkernbac'@'%' IDENTIFIED by 'anuba';"
-# echo "GRANT ALL"
-# mysql -panuba -e "GRANT ALL ON wordpress.* TO 'fkernbac'@'%';"
-# echo "FLUSH"
-# mysql -u root -panuba -e "FLUSH PRIVILEGES;"
-# echo "database set up."
+whoami
+echo "CREATE DATABASE:"
+mysql -e "CREATE DATABASE IF NOT EXISTS wordpress;"
+echo "CREATE USER"
+mysql -e "CREATE USER 'fkernbac'@'%' IDENTIFIED by 'anuba';"
+echo "GRANT ALL"
+mysql -e "GRANT ALL ON wordpress.* TO 'fkernbac'@'%';"
+echo "FLUSH"
+mysql -u root -panuba -e "FLUSH PRIVILEGES;"
+echo "ALTER USER:"
+mysql -e "ALTER USER 'root'@'localhost' IDENTIFIED BY 'anuba';"
+echo "database set up."
 
 # Stop the MySQL server and wait for it to exit cleanly
 mysqladmin -panuba shutdown
@@ -53,11 +53,11 @@ mysqladmin -panuba shutdown
 # Wait for the process to finish
 wait $MYSQL_PID
 
-echo "Creating database users..."
-cat init.sql
-# /usr/bin/mysqld --user=mysql --bootstrap < "init.sql"
+# echo "Creating database users..."
+# cat init.sql
+# /usr/bin/mysqld --defaults-file=/etc/mysql/my.cnf --user=mysql --bootstrap < init.sql
 # mysql --user=mysql < "init.sql"
-mysqld < init.sql
+# mysqld < init.sql
 
 echo "Starting MariaDB..."
 
