@@ -1,5 +1,6 @@
 ### VARIABLES ###
-NAME		:=	inception
+NAME	:=	inception
+LOGIN	:= fkernbac
 
 ### RULES ###
 
@@ -15,10 +16,14 @@ run:
 build:
 	docker-compose build
 
+stop:
+	docker-compose down
+
 ### CLEAN UP ###
 
 clean:
-	rm -rf $(OBJDIR)
+	cd src
+	docker-compose down
 
 fclean: clean
 	sudo rm -rf /home/$(LOGIN)/data/mariadb

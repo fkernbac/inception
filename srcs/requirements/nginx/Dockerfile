@@ -9,6 +9,7 @@ EXPOSE 443
 
 COPY test-nginx.sh /usr/local/bin
 RUN chmod +x /usr/local/bin/test-nginx.sh
+RUN chown -R nobody:nobody /etc/nginx
 ENTRYPOINT ["sh", "/usr/local/bin/test-nginx.sh"]
 
 CMD ["/usr/sbin/nginx", "-g", "daemon off;"]
