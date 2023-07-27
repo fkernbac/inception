@@ -1,36 +1,41 @@
 ### VARIABLES ###
 NAME	:=	inception
-LOGIN	:= fkernbac
+LOGIN	:=	fkernbac
+COMPOSE	:=	./srcs/docker-compose.yml
 
 ### RULES ###
 
 all: $(NAME)
 
-$(NAME): run
+$(NAME): start
 
-run:
-	cd src
-	build
-	docker-compose up
-
-build:
-	docker-compose build
+start:
+	docker-compose -f $(COMPOSE) up --build
 
 stop:
-	docker-compose down
+	docker-compose -f $(COMPOSE) down
+
+run:
+	docker-compose -f $(COMPOSE) up
+
+info:
+	docker ps -a
+	docker images -a
 
 ### CLEAN UP ###
 
 clean:
-	cd src
-	docker-compose down
+	docker-compose -f $(COMPOSE) down --volumes --rmi all
+	sudo rm -rf /home/$(LOGIN)/data/mariadb_data/*
+	sudo rm -rf /home/$(LOGIN)/data/wordpress_data/*
 
 fclean: clean
-	sudo rm -rf /home/$(LOGIN)/data/mariadb
-	sudo rm -rf /home/$(LOGIN)/data/wordpress
+#	docker stop $$(docker ps -qa)
+	docker system prune -a
+	docker image prune
 
 re: fclean all
 
 ### PHONY ###
 
-.PHONY: all clean fclean re
+.PHONY: all clean fclean re start stop run info
