@@ -10,7 +10,7 @@ services:
     depends_on:
       - wordpress
     networks:
-      - internalNetwork
+      - default
     restart: unless-stopped
 
   wordpress:
@@ -22,14 +22,14 @@ services:
     volumes:
       - wordpress_data:/var/www/wordpress
     networks:
-      - internalNetwork
+      - default
     env_file:
       - .env
     environment:
-      WORDPRESS_DB_HOST: ${WORDPRESS_DB_HOST}
-      WORDPRESS_DB_NAME: ${MYSQL_DATABASE}
-      WORDPRESS_DB_USER: ${MYSQL_USER}
-      WORDPRESS_DB_PASSWORD: ${MYSQL_PASSWORD}
+      - DB_HOST=${DB_HOST}
+      - DATABASE=${DATABASE}
+      - USER=${USER}
+      - PASSWORD=${PASSWORD}
     restart: unless-stopped
 
   mariadb:
@@ -38,14 +38,14 @@ services:
     volumes:
       - mariadb_data:/var/lib/mysql
     networks:
-      - internalNetwork
+      - default
     env_file:
       - .env
     environment:
-      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
-      MYSQL_USER: ${MYSQL_USER}
-      MYSQL_PASSWORD: ${MYSQL_PASSWORD}
-      MYSQL_DATABASE: ${MYSQL_DATABASE}
+      ROOT_PASSWORD: ${ROOT_PASSWORD}
+      USER: ${USER}
+      PASSWORD: ${PASSWORD}
+      DATABASE: ${DATABASE}
     restart: unless-stopped
 
 volumes:
@@ -63,5 +63,6 @@ volumes:
       o: bind
 
 networks:
-  internalNetwork:
-    driver: bridge
+  default:
+    external:
+      name: externalNetwork

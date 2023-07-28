@@ -1,13 +1,13 @@
 #!/bin/sh
 
-while ! mariadb -h"mariadb" -p3306 -u"wordpress" -p"wordpress"; do sleep 10; echo "waiting for db ..."; done
+while ! mariadb -h"mariadb" -p3306 -u"wordpress" -p"anuba"; do sleep 10; echo "waiting for db ..."; done
 echo "mariadb:3306 is available!"
 
 echo "Installing wordpress..."
 
 wp core download --allow-root;
-
-wp config create --dbname="wordpress" --dbuser="wordpress" --dbpass="wordpress" --dbhost="mariadb" --allow-root;
+echo "~~~~~~~~ $DATABASE ~~~~~~~~~~"
+wp config create --dbname="wordpress" --dbuser="wordpress" --dbpass="anuba" --dbhost="mariadb" --allow-root;
 wp core install --url=${DOMAIN_NAME} --title=TEST --admin_user="fkernbac" --admin_password="anuba" --admin_email="fra-ker@hotmail.de" --skip-email;
 
 # wp core update --version=6.2 --force;
