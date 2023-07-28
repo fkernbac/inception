@@ -1,15 +1,20 @@
 FROM alpine:3.17
 
-RUN apk update && apk add --no-cache nginx openssl
+RUN	apk update && apk upgrade && apk add --no-cache openssl nginx
 
-RUN mkdir /etc/nginx/ssl
-RUN openssl req -newkey rsa:4096 -x509 -sha256 -days 365 -nodes -out /etc/nginx/fkernbac.crt -keyout /etc/nginx/fkernbac.key -subj "/C=DE/ST=Baden-Württemberg/L=Heilbronn/O=42Heilbronn/OU=fkernbac/CN=fkernbac.42.fr/"
+RUN		rm -f /etc/nginx/nginx.conf
+COPY	./config/nginx.conf /etc/nginx/nginx.conf
+
+RUN		mkdir -p /run/nginx
+RUN		chown nginx:nginx /run/nginx
+
+COPY	scripts/nginx-entrypoint.sh /nginx-entrypoint.sh
+RUN		chmod -R +x /nginx-entrypoint.sh
+
+RUN		mkdir /etc/nginx/ssl
+RUN		openssl req -newkey rsa:4096 -x509 -sha256 -days 365 -nodes -out "/etc/nginx/fkernbac.crt" -keyout "/etc/nginx/fkernbac.key" -subj "/C=DE/ST=Baden-Württemberg/L=Heilbronn/O=42Heilbronn/OU=fkernbac/CN=fkernbac.42.fr/"
 
 EXPOSE 443
 
-COPY test-nginx.sh /usr/local/bin
-RUN chmod +x /usr/local/bin/test-nginx.sh
-RUN chown -R nginx:nginx /etc/nginx
-ENTRYPOINT ["sh", "/usr/local/bin/test-nginx.sh"]
+ENTRYPOINT ["sh", "nginx-entrypoint.sh"]
 
-CMD ["/usr/sbin/nginx", "-g", "daemon off;"]

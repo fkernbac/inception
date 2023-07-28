@@ -1,33 +1,35 @@
 FROM alpine:3.17
 
 #install php-fpm
-RUN apk update && apk add php php-fpm php-opcache mariadb-client
-#install php modules
-RUN apk add php-gd php-mysqli php-zlib php-curl php-tokenizer
-RUN apk add php-common php-cgi php-zip php-mbstring php-xml php-json php-openssl php-ctype php-bcmath openrc
-RUN apk add php-iconv
-# needed for wp-cli
-RUN apk add php-phar php-mbstring
+RUN	apk update && apk upgrade && apk add --no-cache		\
+											php				\
+											php-fpm			\
+											php-phar			\
+											php-json			\
+											php-mysqli			\
+											php-curl			\
+											php-iconv			\
+											# php-pecl-mailparse	\
+											curl				\
+											mariadb-client		\
+											bash				\
+											wget				\
+											curl
 
-#install wordpress
-RUN mkdir -p /var/www/html
-WORKDIR /var/www/html
+RUN			curl -O https://raw.githubusercontent.com/wp-cli/builds/gh-pages/phar/wp-cli.phar && \
+			chmod +x wp-cli.phar &&	\
+			cp wp-cli.phar /usr/bin/wp
 
-# Download wp-cli
-RUN wget https://raw.githubusercontent.com/wp-cli/builds/gh-pages/phar/wp-cli.phar
-# Make it executable
-RUN chmod +x wp-cli.phar
-# Move it into /usr/local/bin/wp
-RUN mv wp-cli.phar /usr/local/bin/wp
-# Check whether the installation worked
-RUN wp --info
+WORKDIR		/var/www/wordpress
 
 RUN			adduser -S nginx &&	\
 			addgroup -S nginx
-RUN chown -R nginx:nginx /var/www/
 
-COPY install-wp.sh /usr/local/bin
-RUN chmod +x /usr/local/bin/install-wp.sh
-ENTRYPOINT ["sh", "/usr/local/bin/install-wp.sh"]
+RUN			mkdir /var/log/php-fpm
+COPY		./config/php-fpm.conf /etc/php81/php-fpm.conf
+COPY		./config/www.conf /etc/php81/php-fpm.d/www.conf
 
-CMD ["php-fpm81", "-F"]
+COPY ./scripts /tmp/scripts
+RUN chmod -R +x /tmp/scripts
+
+ENTRYPOINT ["sh", "/tmp/scripts/wp-entrypoint.sh"]

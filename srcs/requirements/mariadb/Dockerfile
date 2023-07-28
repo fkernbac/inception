@@ -1,20 +1,21 @@
-# Use Alpine Linux as the base image
 FROM alpine:3.17
 
-# Install MariaDB and other required packages
-RUN apk update && apk add --no-cache mariadb mariadb-client
+RUN	apk update && apk upgrade && apk add --no-cache mariadb mariadb-client
 
-# Copy custom configuration files
-COPY my.cnf /etc/mysql/my.cnf
+RUN			mkdir -p /run/mysqld && mkdir -p /var/lib/mysql
+RUN			chown -R mysql:mysql /run/mysqld && chown mysql:mysql /var/lib/mysql
+RUN			mariadb-install-db --user=mysql --datadir='/var/lib/mysql'
 
-# Copy the entrypoint script
-COPY entrypoint.sh /entrypoint.sh
-RUN chmod +x /entrypoint.sh
-COPY init.sql /init.sql
-RUN chmod +rwx /init.sql
+COPY		./config/mariadb-server.cnf /etc/my.cnf.d/mariadb-server.cnf
+RUN			chown -R mysql:mysql /etc/my.cnf.d
 
-# Start MariaDB
-ENTRYPOINT ["/entrypoint.sh"]
+COPY	./scripts /tmp/scripts
+RUN		chown -R mysql:mysql /tmp/scripts
 
-# By default, run the MySQL daemon in the foreground
-CMD ["mysqld", "--user=mysql", "--console"]
+USER		mysql
+
+WORKDIR		/tmp/scripts
+
+EXPOSE		3306
+
+ENTRYPOINT ["sh", "mariadb-entrypoint.sh"]
