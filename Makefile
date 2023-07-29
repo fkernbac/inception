@@ -2,13 +2,19 @@
 NAME	:=	inception
 LOGIN	:=	fkernbac
 
-COMPOSE		=	cd srcs && docker-compose
+COMPOSE		=	./srcs/docker-compose.yml
 
-MAKE_DIR	=	sudo mkdir -m 777 -p
+SUDO		=	sudo
 
-CHMOD		=	sudo chmod -R 777
+MAKE_DIR	=	$(SUDO) mkdir -m 777 -p
 
-CHOWN		=	sudo chown -R fkernbac
+CHMOD		=	$(SUDO) chmod -R 777
+
+CHOWN		=	$(SUDO) chown -R $(LOGIN)
+
+DATA		=	/home/$(LOGIN)/data
+WP_VOLUME	=	$(DATA)/wordpress_data
+DB_VOLUME	=	$(DATA)/mariadb_data
 
 ### RULES ###
 
@@ -17,22 +23,20 @@ all: $(NAME)
 $(NAME): start
 
 start:
-	sudo mkdir -m 777 -p /home/$(LOGIN)/data/wordpress_data
-	sudo mkdir -m 777 -p /home/$(LOGIN)/data/mariadb_data
-	sudo chown -R fkernbac:fkernbac "/home/$(LOGIN)/data"
-	sudo chmod -R 777 "/home/$(LOGIN)/data"
-#	sudo docker network create externalNetwork
-	$(COMPOSE) up --build
+	$(MAKE_DIR) $(WP_VOLUME)
+	$(MAKE_DIR) $(DB_VOLUME)
+	$(CHOWN) $(DATA)
+	$(CHMOD) $(DATA)
+	docker-compose -f $(COMPOSE) up --build
 
 build:
-	docker-compose -f ./srcs/docker-compose.yml build
+	docker-compose -f $(COMPOSE) build
 
 stop:
-#	if docker network rm externalNetworketwork; then echo "No network to remove"; fi
-	docker-compose -f ./srcs/docker-compose.yml down
+	docker-compose -f $(COMPOSE) down
 
 run:
-	docker-compose -f ./srcs/docker-compose.yml up
+	docker-compose -f $(COMPOSE) up
 
 info:
 	docker ps -a
@@ -41,12 +45,11 @@ info:
 ### CLEAN UP ###
 
 clean:
-	docker-compose -f ./srcs/docker-compose.yml down --volumes --rmi all
-	sudo rm -rf /home/$(LOGIN)/data/mariadb_data/*
-	sudo rm -rf /home/$(LOGIN)/data/wordpress_data/*
+	docker-compose -f $(COMPOSE) down --volumes --rmi all
+	$(SUDO) rm -rf $(WP_VOLUME)
+	$(SUDO) rm -rf $(DB_VOLUME)
 
 fclean: clean
-#	docker stop $$(docker ps -qa)
 	docker system prune -a
 	docker image prune
 
@@ -54,4 +57,4 @@ re: fclean all
 
 ### PHONY ###
 
-.PHONY: all clean fclean re start stop run info
+.PHONY: all clean fclean re start build stop run info

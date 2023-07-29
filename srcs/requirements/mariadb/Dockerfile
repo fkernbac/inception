@@ -2,20 +2,18 @@ FROM alpine:3.17
 
 RUN	apk update && apk upgrade && apk add --no-cache mariadb mariadb-client
 
-RUN			mkdir -p /run/mysqld && mkdir -p /var/lib/mysql
-RUN			chown -R mysql:mysql /run/mysqld && chown mysql:mysql /var/lib/mysql
-RUN			mariadb-install-db --user=mysql --datadir='/var/lib/mysql'
+RUN	mkdir -p /run/mysqld && mkdir -p /var/lib/mysql
+RUN	chown -R mysql:mysql /run/mysqld && chown mysql:mysql /var/lib/mysql
+RUN	mariadb-install-db --user=mysql --datadir='/var/lib/mysql'
 
-COPY		./config/mariadb-server.cnf /etc/my.cnf.d/mariadb-server.cnf
-RUN			chown -R mysql:mysql /etc/my.cnf.d
+COPY	./config/mariadb-server.cnf /etc/my.cnf.d/mariadb-server.cnf
+RUN		chown -R mysql:mysql /etc/my.cnf.d
 
-COPY	./scripts /tmp/scripts
-RUN		chown -R mysql:mysql /tmp/scripts
+COPY	./tools /tmp/tools
+RUN		chown -R mysql:mysql /tmp/tools
 
 USER		mysql
 
-WORKDIR		/tmp/scripts
-
-EXPOSE		3306
+WORKDIR		/tmp/tools
 
 ENTRYPOINT ["sh", "mariadb-entrypoint.sh"]

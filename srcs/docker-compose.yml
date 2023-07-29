@@ -10,7 +10,13 @@ services:
     depends_on:
       - wordpress
     networks:
-      - default
+      - inception
+    env_file:
+      - .env
+    environment:
+      - DOMAIN_NAME=${DOMAIN_NAME}
+      - CERT=${CERT}
+      - KEY=${KEY}
     restart: unless-stopped
 
   wordpress:
@@ -22,14 +28,18 @@ services:
     volumes:
       - wordpress_data:/var/www/wordpress
     networks:
-      - default
+      - inception
     env_file:
       - .env
     environment:
       - DB_HOST=${DB_HOST}
-      - DATABASE=${DATABASE}
-      - USER=${USER}
-      - PASSWORD=${PASSWORD}
+      - DB_NAME=${DB_NAME}
+      - ADMIN_USER=${ADMIN_USER}
+      - ADMIN_PASSWORD=${ADMIN_PASSWORD}
+      - DB_USER=${DB_USER}
+      - DB_PASSWORD=${DB_PASSWORD}
+      - WP_USER=${WP_USER}
+      - WP_PASSWORD=${WP_PASSWORD}
     restart: unless-stopped
 
   mariadb:
@@ -38,14 +48,13 @@ services:
     volumes:
       - mariadb_data:/var/lib/mysql
     networks:
-      - default
+      - inception
     env_file:
       - .env
     environment:
-      ROOT_PASSWORD: ${ROOT_PASSWORD}
-      USER: ${USER}
-      PASSWORD: ${PASSWORD}
-      DATABASE: ${DATABASE}
+      DB_NAME: ${DB_NAME}
+      DB_USER: ${DB_USER}
+      DB_PASSWORD: ${DB_PASSWORD}
     restart: unless-stopped
 
 volumes:
@@ -63,6 +72,5 @@ volumes:
       o: bind
 
 networks:
-  default:
-    external:
-      name: externalNetwork
+  inception:
+    driver: bridge

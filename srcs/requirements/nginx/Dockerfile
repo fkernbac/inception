@@ -1,20 +1,17 @@
-FROM alpine:3.17
+FROM	alpine:3.17
 
-RUN	apk update && apk upgrade && apk add --no-cache openssl nginx
+RUN		apk update && apk upgrade && apk add --no-cache openssl nginx
 
-RUN		rm -f /etc/nginx/nginx.conf
+# RUN		rm -f /etc/nginx/nginx.conf
 COPY	./config/nginx.conf /etc/nginx/nginx.conf
 
-RUN		mkdir -p /run/nginx
-RUN		chown nginx:nginx /run/nginx
+# RUN		mkdir -p /run/nginx
+# RUN		chown nobody:nobody /run/nginx
 
-COPY	scripts/nginx-entrypoint.sh /nginx-entrypoint.sh
+COPY	tools/nginx-entrypoint.sh /nginx-entrypoint.sh
 RUN		chmod -R +x /nginx-entrypoint.sh
 
-RUN		mkdir /etc/nginx/ssl
-RUN		openssl req -newkey rsa:4096 -x509 -sha256 -days 365 -nodes -out "/etc/nginx/fkernbac.crt" -keyout "/etc/nginx/fkernbac.key" -subj "/C=DE/ST=Baden-Württemberg/L=Heilbronn/O=42Heilbronn/OU=fkernbac/CN=fkernbac.42.fr/"
+EXPOSE	443
 
-EXPOSE 443
-
-ENTRYPOINT ["sh", "nginx-entrypoint.sh"]
+ENTRYPOINT	["sh", "nginx-entrypoint.sh"]
 
