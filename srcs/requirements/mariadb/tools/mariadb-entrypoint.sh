@@ -3,7 +3,7 @@
 echo "Installing MariaDB..."
 
 # Start the MySQL server
-mariadbd & MYSQL_PID=$!
+mariadbd -uroot & MYSQL_PID=$!
 
 # Wait for the MySQL server to start up
 while ! mysqladmin ping --silent; do
@@ -22,4 +22,4 @@ wait $MYSQL_PID
 # Finally, start MySQL in the foreground
 echo "Starting MariaDB..."
 
-mariadbd
+mariadbd -uroot
