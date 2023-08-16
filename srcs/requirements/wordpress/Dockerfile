@@ -24,7 +24,7 @@ RUN		mkdir /var/log/php-fpm
 COPY	./config/php-fpm.conf /etc/php81/php-fpm.conf
 COPY	./config/www.conf /etc/php81/php-fpm.d/www.conf
 
-COPY ./tools /tmp/tools
-RUN chmod -R +x /tmp/tools
+COPY	./tools /tmp/tools
+RUN		chmod -R +x /tmp/tools
 
 ENTRYPOINT ["sh", "/tmp/tools/wp-entrypoint.sh"]

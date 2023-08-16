@@ -4,13 +4,11 @@ LOGIN	:=	fkernbac
 
 COMPOSE		=	./srcs/docker-compose.yml
 
-SUDO		=	sudo
+MAKE_DIR	=	sudo mkdir -m 644 -p
 
-MAKE_DIR	=	$(SUDO) mkdir -m 777 -p
+CHMOD		=	sudo chmod -R 644
 
-CHMOD		=	$(SUDO) chmod -R 777
-
-CHOWN		=	$(SUDO) chown -R $(LOGIN)
+CHOWN		=	sudo chown -R $(LOGIN)
 
 DATA		=	/home/$(LOGIN)/data
 WP_VOLUME	=	$(DATA)/wordpress_data
@@ -32,10 +30,10 @@ start:
 build:
 	docker-compose -f $(COMPOSE) build
 
-stop:
+down:
 	docker-compose -f $(COMPOSE) down
 
-run:
+up:
 	docker-compose -f $(COMPOSE) up
 
 info:
@@ -46,8 +44,8 @@ info:
 
 clean:
 	docker-compose -f $(COMPOSE) down --volumes --rmi all
-	$(SUDO) rm -rf $(WP_VOLUME)
-	$(SUDO) rm -rf $(DB_VOLUME)
+	sudo rm -rf $(WP_VOLUME)
+	sudo rm -rf $(DB_VOLUME)
 
 fclean: clean
 	docker system prune -a

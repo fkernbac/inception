@@ -1,7 +1,7 @@
 #!/bin/sh
 
 # Generate SSL certificate
-openssl req -newkey rsa:4096 -x509 -sha256 -days 365 -nodes -out ${CERT} -keyout ${KEY} -subj "/C=DE/ST=Baden-Württemberg/L=Heilbronn/O=42Heilbronn/OU=${ADMIN_USER}/CN=${DOMAIN_NAME}/"
+openssl req -newkey rsa:4096 -x509 -sha256 -days 365 -nodes -out ${CERT} -keyout ${KEY} -subj "/C=DE/ST=Baden-Wuerttemberg/L=Heilbronn/O=42Heilbronn/OU=${ADMIN_USER}/CN=${DOMAIN_NAME}/"
 
 
 # Wait for WordPress container to start
