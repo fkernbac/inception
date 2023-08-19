@@ -12,14 +12,12 @@ done
 
 # Perform initial setup for MariaDB, create the database, user, and grant privileges
 echo "Setting up database..."
-
 mariadb -e "$(eval "echo \"$(cat init.sql)\"")"
 
 # Stop the MySQL server and wait for it to exit cleanly
-mysqladmin shutdown
+mysqladmin -p$ADMIN_PASSWORD shutdown
 wait $MYSQL_PID
 
 # Finally, start MySQL in the foreground
-echo "Starting MariaDB..."
-
+echo "MariaDB initialized successuflly."
 mariadbd -uroot
