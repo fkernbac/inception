@@ -11,8 +11,12 @@ while ! mysqladmin ping --silent; do
 done
 
 # Perform initial setup for MariaDB, create the database, user, and grant privileges
-echo "Setting up database..."
-mariadb -e "$(eval "echo \"$(cat init.sql)\"")"
+if mariadb -u"$DB_USER" -p"$DB_PASSWORD" -h"$DB_HOST" -e "USE $DB_NAME" 2>/dev/null; then
+	echo "Database found."
+else
+	echo "Setting up database..."
+	mariadb -e "$(eval "echo \"$(cat init.sql)\"")"
+fi
 
 # Stop the MySQL server and wait for it to exit cleanly
 mysqladmin -p$ADMIN_PASSWORD shutdown

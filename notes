@@ -14,11 +14,11 @@ docker image prune
 delete ALL images:
 docker rmi -f $(docker images -aq)
 
-
-CREATE DATABASE IF NOT EXISTS wordpress;
-CREATE USER IF NOT EXISTS 'fkernbac'@'%' IDENTIFIED BY 'anuba';
-GRANT ALL PRIVILEGES ON wordpress.* TO 'fkernbac'@'%' IDENTIFIED BY 'anuba';
-FLUSH PRIVILEGES;
-ALTER USER 'root'@'localhost' IDENTIFIED BY 'anuba';
-FLUSH PRIVILEGES;
 SHOW DATABASES;
+USE wordpress;
+SHOW TABLES;
+
+mariadb -uwordpress -pwordpress -hmariadb
+
+curl localhost:80
+curl localhost:443

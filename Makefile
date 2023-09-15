@@ -4,9 +4,9 @@ LOGIN	:=	fkernbac
 
 COMPOSE		=	./srcs/docker-compose.yml
 
-MAKE_DIR	=	sudo mkdir -m 644 -p
+MAKE_DIR	=	sudo mkdir -m 744 -p
 
-CHMOD		=	sudo chmod -R 644
+CHMOD		=	sudo chmod -R 744
 
 CHOWN		=	sudo chown -R $(LOGIN)
 
